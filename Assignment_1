@@ -1,0 +1,52 @@
+package library.management;
+import java.util.ArrayList;
+class Book {
+ String title;
+ boolean isBorrowed;
+ // Final constant policy message
+ public static final String BOOK_POLICY = 
+ "Note: All books are for educational purposes only. Misuse is prohibited.";
+ Book(String title) {
+ this.title = title;
+ this.isBorrowed = false;
+ }
+}
+class Member {
+ String name;
+ ArrayList<Book> borrowedBooks;
+ Member(String name) {
+     this.name = name;
+ this.borrowedBooks = new ArrayList<>();
+ }
+ // Borrow book method
+ public void borrowBook(Book book) {
+ if (!book.isBorrowed) {
+ borrowedBooks.add(book);
+ book.isBorrowed = true;
+ System.out.println(name + " borrowed \"" + book.title + "\"");
+ } else {
+ System.out.println("Sorry, \"" + book.title + "\" is already borrowed.");
+ }
+ }
+ // Return book method
+ public void returnBook(Book book) {
+ if (borrowedBooks.contains(book)) {
+ borrowedBooks.remove(book);
+ book.isBorrowed = false;
+ System.out.println(name + " returned \"" + book.title + "\"");
+ } else {
+ System.out.println(name + " did not borrow \"" + book.title + "\"");
+ }
+ }
+}
+public class LibraryDemo {
+ public static void main(String[] args) {
+ Book b1 = new Book("The Alchemist");
+ Member m1 = new Member("John");
+ m1.borrowBook(b1);
+ m1.returnBook(b1);
+ m1.returnBook(b1);
+ // Always display fixed book policy
+ System.out.println("\n" + Book.BOOK_POLICY);
+ }
+}
