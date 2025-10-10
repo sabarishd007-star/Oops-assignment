@@ -1,0 +1,73 @@
+package demo;
+
+// Program: Thread with Sleep Example
+class SleepExample extends Thread {
+
+    // run() method — executed when thread starts
+    public void run() {
+        try {
+            System.out.println("Thread " + Thread.currentThread().getName() + " is starting...");
+
+            // Loop to print messages before sleeping
+            for (int i = 1; i <= 3; i++) {
+                System.out.println("Thread " + Thread.currentThread().getName() + " is working... step " + i);
+                Thread.sleep(1000); // Sleep for 1 second
+            }
+
+            System.out.println("Thread " + Thread.currentThread().getName() + " is going to sleep for 3 seconds...");
+            Thread.sleep(3000); // Sleep for 3 seconds
+
+            System.out.println("Thread " + Thread.currentThread().getName() + " has woken up and continues execution...");
+
+            // Continue after waking up
+            for (int i = 4; i <= 6; i++) {
+                System.out.println("Thread " + Thread.currentThread().getName() + " is working... step " + i);
+                Thread.sleep(1000); // Sleep for 1 second
+            }
+
+            System.out.println("Thread " + Thread.currentThread().getName() + " has finished execution.\n");
+
+        } catch (InterruptedException e) {
+            System.out.println("Thread " + Thread.currentThread().getName() + " was interrupted.");
+        }
+    }
+
+    // main() method
+    public static void main(String[] args) {
+        System.out.println("=== Main Thread Started ===");
+
+        // Create two threads
+        SleepExample t1 = new SleepExample();
+        SleepExample t2 = new SleepExample();
+
+        // Set thread names
+        t1.setName("SleepThread-1");
+        t2.setName("SleepThread-2");
+
+        // Start threads
+        t1.start();
+        t2.start();
+    }
+}
+
+
+output 
+=== Main Thread Started ===
+Thread SleepThread-1 is starting...
+Thread SleepThread-2 is starting...
+Thread SleepThread-1 is working... step 1
+Thread SleepThread-2 is working... step 1
+Thread SleepThread-1 is working... step 2
+Thread SleepThread-2 is working... step 2
+Thread SleepThread-1 is working... step 3
+Thread SleepThread-2 is working... step 3
+Thread SleepThread-1 is going to sleep for 3 seconds...
+Thread SleepThread-2 is going to sleep for 3 seconds...
+Thread SleepThread-1 has woken up and continues execution...
+Thread SleepThread-2 has woken up and continues execution...
+Thread SleepThread-1 is working... step 4
+Thread SleepThread-2 is working... step 4
+Thread SleepThread-1 is working... step 5
+Thread SleepThread-2 is working... step 5
+Thread SleepThread-1 is working... step 6
+Thread SleepThread-2 is working... step 6
