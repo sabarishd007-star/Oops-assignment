@@ -1,0 +1,62 @@
+public static void main(String[] args) {
+
+        System.out.println("Connecting to database... (simulated)");
+
+        // Step 1: Simulate table creation
+        String createSQL = "CREATE TABLE IF NOT EXISTS students ("
+                         + "id INT PRIMARY KEY AUTO_INCREMENT, "
+                         + "name VARCHAR(100) NOT NULL, "
+                         + "age INT, "
+                         + "grade VARCHAR(10))";
+        System.out.println("Executing SQL: " + createSQL);
+        System.out.println("Table 'students' created successfully (simulation).");
+
+        // Step 2: Simulate data insertion
+        String[] names = {"Alice", "Bob", "Charlie"};
+        int[] ages = {20, 22, 19};
+        String[] grades = {"A", "B", "A"};
+
+        System.out.println("\nInserting records into table (simulated):");
+        for (int i = 0; i < names.length; i++) {
+            String insertSQL = "INSERT INTO students VALUES (" 
+                             + (i + 1) + ", '" + names[i] + "', " 
+                             + ages[i] + ", '" + grades[i] + "');";
+            System.out.println("Executing SQL: " + insertSQL);
+        }
+        System.out.println("Records inserted successfully (simulation).");
+
+        // Step 3: Simulate data retrieval (SELECT)
+        System.out.println("\nRetrieving data from table (simulated):");
+        System.out.println("-----------------------------------------");
+        System.out.printf("%-5s %-10s %-5s %-5s\n", "ID", "Name", "Age", "Grade");
+        System.out.println("-----------------------------------------");
+        for (int i = 0; i < names.length; i++) {
+            System.out.printf("%-5d %-10s %-5d %-5s\n", (i + 1), names[i], ages[i], grades[i]);
+        }
+        System.out.println("-----------------------------------------");
+        System.out.println("Data displayed successfully (simulation).");
+
+        System.out.println("\nDisconnecting from database... (simulated)");
+    }
+}
+
+OUTPUT 
+Connecting to database... (simulated)
+Executing SQL: CREATE TABLE IF NOT EXISTS students (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, age INT, grade VARCHAR(10))
+Table 'students' created successfully (simulation).
+
+Inserting records into table (simulated):
+Executing SQL: INSERT INTO students VALUES (1, 'Alice', 20, 'A');
+Executing SQL: INSERT INTO students VALUES (2, 'Bob', 22, 'B');
+Executing SQL: INSERT INTO students VALUES (3, 'Charlie', 19, 'A');
+Records inserted successfully (simulation).
+
+Retrieving data from table (simulated):
+-----------------------------------------
+ID    Name       Age   Grade
+-----------------------------------------
+1     Alice      20    A    
+2     Bob        22    B    
+3     Charlie    19    A    
+-----------------------------------------
+Data displayed successfully (simulation).
