@@ -1,0 +1,33 @@
+import java.util.Scanner;
+
+public class TrafficLightConsole {
+    enum Light {
+        RED, YELLOW, GREEN
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Light[] lights = Light.values();
+        int current = 0;
+
+        System.out.println("🚦 Traffic Light Simulation");
+        System.out.println("Press Enter to change light. Ctrl+C to exit.\n");
+
+        while (true) {
+            displayLight(lights[current]);
+            scanner.nextLine(); // Wait for Enter
+            current = (current + 1) % lights.length;
+        }
+    }
+
+    static void displayLight(Light light) {
+        System.out.println("---------------");
+        System.out.println("|             |");
+        System.out.println("|   " + (light == Light.RED ? "🔴" : "⚫") + "   |");
+        System.out.println("|   " + (light == Light.YELLOW ? "🟡" : "⚫") + "   |");
+        System.out.println("|   " + (light == Light.GREEN ? "🟢" : "⚫") + "   |");
+        System.out.println("|             |");
+        System.out.println("---------------");
+        System.out.println("Current Light: " + light + "\n");
+    }
+}
