@@ -1,0 +1,2761 @@
+PROGRAM 
+
+
+
+SQL QUERY :
+
+CREATE DATABASE bloodbank;
+
+
+
+USE bloodbank;
+
+
+
+CREATE TABLE bloodbank_details (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    name VARCHAR(25) NOT NULL,
+
+    bloodgroup VARCHAR(5),
+
+    quantity INT,
+
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+
+
+CREATE TABLE admin (
+
+    login_id VARCHAR(25),
+
+    password VARCHAR(25)
+
+);
+
+
+
+INSERT INTO admin (login_id, password) VALUES
+
+("admin", "admin");
+
+
+
+ Blood Bank Management System Project in Java : 
+
+import java.sql.Connection;
+
+import java.sql.DriverManager;
+
+import java.sql.SQLException;
+
+import java.util.logging.Level;
+
+import java.util.logging.Logger;
+
+
+
+public class DBConnection {
+
+
+
+    private Connection con;
+
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+
+    private final String user = "root";
+
+    private final String pass = "root";
+
+
+
+    public Connection mkDataBase() throws SQLException {
+
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+
+            con = DriverManager.getConnection(url, user, pass);
+
+        } catch (ClassNotFoundException ex) {
+
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+
+        return con;
+
+    }
+
+}
+
+LOGIN.JAVA : 
+
+import java.awt.*;
+
+import javax.swing.*;
+
+
+
+public class Login extends JFrame {
+
+
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+
+    JTextField id;
+
+    JPasswordField pass;
+
+    JButton submit;
+
+
+
+    public Login() {
+
+
+
+        setTitle("Blood Bank Management System");
+
+        setSize(700, 400);
+
+        setLayout(null);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setLocationRelativeTo(null);
+
+
+
+        init();
+
+        setVisible(true);
+
+    }
+
+
+
+    public void init() {
+
+
+
+        headerLabel = new JLabel("Blood Bank Management System");
+
+        headerLabel.setBounds(180, 20, 400, 40);
+
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+
+        headerLabel.setForeground(Color.RED);
+
+        add(headerLabel);
+
+
+
+        idLabel = new JLabel("Username");
+
+        idLabel.setBounds(180, 110, 140, 30);
+
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+        add(idLabel);
+
+
+
+        passLabel = new JLabel("Password");
+
+        passLabel.setBounds(180, 160, 140, 30);
+
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+        add(passLabel);
+
+
+
+        id = new JTextField();
+
+        id.setBounds(300, 110, 200, 30);
+
+        add(id);
+
+
+
+        pass = new JPasswordField();
+
+        pass.setBounds(300, 160, 200, 30);
+
+        add(pass);
+
+
+
+        submit = new JButton("Login");
+
+        submit.setBounds(400, 220, 100, 30);
+
+        submit.addActionListener(this::submitActionPerformed);
+
+        add(submit);
+
+
+
+        devInfo = new JLabel("Developed by: Your Name");
+
+        devInfo.setBounds(200, 320, 400, 30);
+
+        devInfo.setForeground(Color.GRAY);
+
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        add(devInfo);
+
+    }
+
+
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+
+
+        String user = id.getText();
+
+        String pwd = new String(pass.getPassword());
+
+
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+
+
+            this.dispose(); // close window
+
+
+
+            // Open next frame
+
+            Frame2new f = new Frame2new();
+
+            f.showButtonDemo();
+
+
+
+        } else {
+
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+
+        }
+
+    }
+
+
+
+    public static void main(String[] args) {
+
+        new Login();
+
+    }
+
+}
+
+
+
+HOME.JAVA : 
+
+
+
+import java.awt.*;
+
+import java.awt.event.*;
+
+import javax.swing.*;
+
+
+
+public class Home {
+
+
+
+    private JFrame mainFrame;
+
+    private JLabel headerLabel;
+
+    private JPanel controlPanel;
+
+
+
+    public static void main(String[] args) {
+
+        Home home = new Home();
+
+        home.prepareGUI();
+
+        home.showButtonDemo();
+
+    }
+
+
+
+    private void prepareGUI() {
+
+        mainFrame = new JFrame("Blood Bank Management System");
+
+        mainFrame.setSize(700, 400);
+
+        mainFrame.setLayout(new GridLayout(3, 1));
+
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent windowEvent) {
+
+                System.exit(0);
+
+            }
+
+        });
+
+
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+
+        headerLabel.setForeground(Color.WHITE);
+
+
+
+        controlPanel = new JPanel();
+
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+
+
+        mainFrame.add(headerLabel);
+
+        mainFrame.add(controlPanel);
+
+
+
+        mainFrame.setVisible(true);
+
+        mainFrame.setLocationRelativeTo(null);
+
+    }
+
+
+
+    public void showButtonDemo() {
+
+        headerLabel.setText("Blood Bank Management System");
+
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+
+
+        JButton donorList = new JButton("View Donors");
+
+        JButton add = new JButton("Add Donor");
+
+        JButton update = new JButton("Update Donor");
+
+        JButton delete = new JButton("Delete Donor");
+
+        JButton donate = new JButton("Blood Donations");
+
+
+
+        donorList.addActionListener(e -> new ViewDonors());
+
+        add.addActionListener(e -> new AddDonor());
+
+        update.addActionListener(e -> new UpdateDonor());
+
+        delete.addActionListener(e -> new DeleteDonor());
+
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+
+
+        controlPanel.add(add);
+
+        controlPanel.add(update);
+
+        controlPanel.add(delete);
+
+        controlPanel.add(donorList);
+
+        controlPanel.add(donate);
+
+
+
+        mainFrame.setVisible(true);
+
+    }
+
+}
+
+
+
+ADD DONOR.JAVA:
+
+import javax.swing.*;
+
+import java.awt.*;
+
+import java.util.ArrayList;
+
+
+
+public class AddDonor {
+
+
+
+    public AddDonor() {
+
+        JFrame f = new JFrame("Add Donor");
+
+        f.setSize(400, 400);
+
+        f.setLayout(null);
+
+        f.setLocationRelativeTo(null);
+
+
+
+        JLabel nameL = new JLabel("Name:");
+
+        nameL.setBounds(50, 50, 100, 30);
+
+        f.add(nameL);
+
+
+
+        JTextField name = new JTextField();
+
+        name.setBounds(150, 50, 200, 30);
+
+        f.add(name);
+
+
+
+        JLabel bloodL = new JLabel("Blood Group:");
+
+        bloodL.setBounds(50, 100, 100, 30);
+
+        f.add(bloodL);
+
+
+
+        JTextField blood = new JTextField();
+
+        blood.setBounds(150, 100, 200, 30);
+
+        f.add(blood);
+
+
+
+        JLabel phoneL = new JLabel("Phone:");
+
+        phoneL.setBounds(50, 150, 100, 30);
+
+        f.add(phoneL);
+
+
+
+        JTextField phone = new JTextField();
+
+        phone.setBounds(150, 150, 200, 30);
+
+        f.add(phone);
+
+
+
+        JButton addBtn = new JButton("Add Donor");
+
+        addBtn.setBounds(130, 220, 150, 40);
+
+        f.add(addBtn);
+
+
+
+        addBtn.addActionListener(a -> {
+
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+
+            f.dispose();
+
+        });
+
+
+
+        f.setVisible(true);
+
+    }
+
+}
+
+
+
+DONORDETAILS.JAVA
+
+import javax.swing.*;
+
+import java.awt.*;
+
+
+
+public class DonorDetails {
+
+
+
+    public DonorDetails() {
+
+
+
+        JFrame f = new JFrame("Donor Details");
+
+        f.setSize(450, 400);
+
+        f.setLayout(null);
+
+        f.setLocationRelativeTo(null);
+
+
+
+        JLabel title = new JLabel("Search Donor Details");
+
+        title.setBounds(100, 20, 300, 30);
+
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+
+        title.setForeground(Color.RED);
+
+        f.add(title);
+
+
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+
+        nameLabel.setBounds(50, 80, 150, 30);
+
+        f.add(nameLabel);
+
+
+
+        JTextField nameField = new JTextField();
+
+        nameField.setBounds(180, 80, 180, 30);
+
+        f.add(nameField);
+
+
+
+        JButton searchBtn = new JButton("Search");
+
+        searchBtn.setBounds(150, 130, 120, 35);
+
+        f.add(searchBtn);
+
+
+
+        // Display labels
+
+        JLabel resultTitle = new JLabel("Donor Information");
+
+        resultTitle.setBounds(120, 180, 250, 30);
+
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+
+        resultTitle.setVisible(false);
+
+        f.add(resultTitle);
+
+
+
+        JLabel nameOut = new JLabel();
+
+        nameOut.setBounds(70, 220, 300, 30);
+
+        f.add(nameOut);
+
+
+
+        JLabel bloodOut = new JLabel();
+
+        bloodOut.setBounds(70, 250, 300, 30);
+
+        f.add(bloodOut);
+
+
+
+        JLabel phoneOut = new JLabel();
+
+        phoneOut.setBounds(70, 280, 300, 30);
+
+        f.add(phoneOut);
+
+
+
+        searchBtn.addActionListener(e -> {
+
+
+
+            String search = nameField.getText().trim();
+
+
+
+            if (search.equals("")) {
+
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+
+                return;
+
+            }
+
+
+
+            boolean found = false;
+
+
+
+            for (Donor d : DonorData.donors) {
+
+
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+
+
+                    resultTitle.setVisible(true);
+
+
+
+                    nameOut.setText("Name: " + d.name);
+
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+
+                    phoneOut.setText("Phone: " + d.phone);
+
+
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+
+
+                    found = true;
+
+                    break;
+
+                }
+
+            }
+
+
+
+            if (!found) {
+
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+
+                resultTitle.setVisible(false);
+
+                nameOut.setText("");
+
+                bloodOut.setText("");
+
+                phoneOut.setText("");
+
+            }
+
+        });
+
+
+
+        f.setVisible(true);
+
+    }
+
+}
+
+UPDATEDONOR.JAVA : 
+
+import javax.swing.*;
+
+
+
+public class UpdateDonor {
+
+
+
+    public UpdateDonor() {
+
+
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Update:");
+
+
+
+        if (search == null) return;
+
+
+
+        for (Donor d : DonorData.donors) {
+
+
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+
+
+                String newPhone = JOptionPane.showInputDialog("Enter new phone:");
+
+                String newBlood = JOptionPane.showInputDialog("Enter new blood group:");
+
+
+
+                d.phone = newPhone;
+
+                d.bloodGroup = newBlood;
+
+
+
+                JOptionPane.showMessageDialog(null, "Donor Updated Successfully!");
+
+                return;
+
+            }
+
+        }
+
+
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+
+    }
+
+}
+
+
+
+
+
+DELETEDONOR.JAVA : 
+
+import javax.swing.*;
+
+
+
+public class DeleteDonor {
+
+
+
+    public DeleteDonor() {
+
+
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Delete:");
+
+
+
+        if (search == null) return;
+
+
+
+        for (Donor d : DonorData.donors) {
+
+
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+                DonorData.donors.remove(d);
+
+                JOptionPane.showMessageDialog(null, "Donor Deleted Successfully!");
+
+                return;
+
+            }
+
+        }
+
+
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+PROGRAM 
+
+SQL QUERY :
+CREATE DATABASE bloodbank;
+
+USE bloodbank;
+
+CREATE TABLE bloodbank_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    bloodgroup VARCHAR(5),
+    quantity INT,
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin (
+    login_id VARCHAR(25),
+    password VARCHAR(25)
+);
+
+INSERT INTO admin (login_id, password) VALUES
+("admin", "admin");
+
+ Blood Bank Management System Project in Java : 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnection {
+
+    private Connection con;
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+    private final String user = "root";
+    private final String pass = "root";
+
+    public Connection mkDataBase() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+            con = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return con;
+    }
+}
+LOGIN.JAVA : 
+import java.awt.*;
+import javax.swing.*;
+
+public class Login extends JFrame {
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+    JTextField id;
+    JPasswordField pass;
+    JButton submit;
+
+    public Login() {
+
+        setTitle("Blood Bank Management System");
+        setSize(700, 400);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        init();
+        setVisible(true);
+    }
+
+    public void init() {
+
+        headerLabel = new JLabel("Blood Bank Management System");
+        headerLabel.setBounds(180, 20, 400, 40);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setForeground(Color.RED);
+        add(headerLabel);
+
+        idLabel = new JLabel("Username");
+        idLabel.setBounds(180, 110, 140, 30);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(idLabel);
+
+        passLabel = new JLabel("Password");
+        passLabel.setBounds(180, 160, 140, 30);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(passLabel);
+
+        id = new JTextField();
+        id.setBounds(300, 110, 200, 30);
+        add(id);
+
+        pass = new JPasswordField();
+        pass.setBounds(300, 160, 200, 30);
+        add(pass);
+
+        submit = new JButton("Login");
+        submit.setBounds(400, 220, 100, 30);
+        submit.addActionListener(this::submitActionPerformed);
+        add(submit);
+
+        devInfo = new JLabel("Developed by: Your Name");
+        devInfo.setBounds(200, 320, 400, 30);
+        devInfo.setForeground(Color.GRAY);
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+        add(devInfo);
+    }
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String user = id.getText();
+        String pwd = new String(pass.getPassword());
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+            this.dispose(); // close window
+
+            // Open next frame
+            Frame2new f = new Frame2new();
+            f.showButtonDemo();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Login();
+    }
+}
+
+HOME.JAVA : 
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Home {
+
+    private JFrame mainFrame;
+    private JLabel headerLabel;
+    private JPanel controlPanel;
+
+    public static void main(String[] args) {
+        Home home = new Home();
+        home.prepareGUI();
+        home.showButtonDemo();
+    }
+
+    private void prepareGUI() {
+        mainFrame = new JFrame("Blood Bank Management System");
+        mainFrame.setSize(700, 400);
+        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setForeground(Color.WHITE);
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+        mainFrame.add(headerLabel);
+        mainFrame.add(controlPanel);
+
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void showButtonDemo() {
+        headerLabel.setText("Blood Bank Management System");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        JButton donorList = new JButton("View Donors");
+        JButton add = new JButton("Add Donor");
+        JButton update = new JButton("Update Donor");
+        JButton delete = new JButton("Delete Donor");
+        JButton donate = new JButton("Blood Donations");
+
+        donorList.addActionListener(e -> new ViewDonors());
+        add.addActionListener(e -> new AddDonor());
+        update.addActionListener(e -> new UpdateDonor());
+        delete.addActionListener(e -> new DeleteDonor());
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+        controlPanel.add(add);
+        controlPanel.add(update);
+        controlPanel.add(delete);
+        controlPanel.add(donorList);
+        controlPanel.add(donate);
+
+        mainFrame.setVisible(true);
+    }
+}
+
+ADD DONOR.JAVA:
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AddDonor {
+
+    public AddDonor() {
+        JFrame f = new JFrame("Add Donor");
+        f.setSize(400, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel nameL = new JLabel("Name:");
+        nameL.setBounds(50, 50, 100, 30);
+        f.add(nameL);
+
+        JTextField name = new JTextField();
+        name.setBounds(150, 50, 200, 30);
+        f.add(name);
+
+        JLabel bloodL = new JLabel("Blood Group:");
+        bloodL.setBounds(50, 100, 100, 30);
+        f.add(bloodL);
+
+        JTextField blood = new JTextField();
+        blood.setBounds(150, 100, 200, 30);
+        f.add(blood);
+
+        JLabel phoneL = new JLabel("Phone:");
+        phoneL.setBounds(50, 150, 100, 30);
+        f.add(phoneL);
+
+        JTextField phone = new JTextField();
+        phone.setBounds(150, 150, 200, 30);
+        f.add(phone);
+
+        JButton addBtn = new JButton("Add Donor");
+        addBtn.setBounds(130, 220, 150, 40);
+        f.add(addBtn);
+
+        addBtn.addActionListener(a -> {
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+            f.dispose();
+        });
+
+        f.setVisible(true);
+    }
+}
+
+DONORDETAILS.JAVA
+import javax.swing.*;
+import java.awt.*;
+
+public class DonorDetails {
+
+    public DonorDetails() {
+
+        JFrame f = new JFrame("Donor Details");
+        f.setSize(450, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel title = new JLabel("Search Donor Details");
+        title.setBounds(100, 20, 300, 30);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setForeground(Color.RED);
+        f.add(title);
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+        nameLabel.setBounds(50, 80, 150, 30);
+        f.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setBounds(180, 80, 180, 30);
+        f.add(nameField);
+
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(150, 130, 120, 35);
+        f.add(searchBtn);
+
+        // Display labels
+        JLabel resultTitle = new JLabel("Donor Information");
+        resultTitle.setBounds(120, 180, 250, 30);
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        resultTitle.setVisible(false);
+        f.add(resultTitle);
+
+        JLabel nameOut = new JLabel();
+        nameOut.setBounds(70, 220, 300, 30);
+        f.add(nameOut);
+
+        JLabel bloodOut = new JLabel();
+        bloodOut.setBounds(70, 250, 300, 30);
+        f.add(bloodOut);
+
+        JLabel phoneOut = new JLabel();
+        phoneOut.setBounds(70, 280, 300, 30);
+        f.add(phoneOut);
+
+        searchBtn.addActionListener(e -> {
+
+            String search = nameField.getText().trim();
+
+            if (search.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+                return;
+            }
+
+            boolean found = false;
+
+            for (Donor d : DonorData.donors) {
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+                    resultTitle.setVisible(true);
+
+                    nameOut.setText("Name: " + d.name);
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+                    phoneOut.setText("Phone: " + d.phone);
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+                resultTitle.setVisible(false);
+                nameOut.setText("");
+                bloodOut.setText("");
+                phoneOut.setText("");
+            }
+        });
+
+        f.setVisible(true);
+    }
+}
+UPDATEDONOR.JAVA : 
+import javax.swing.*;
+
+public class UpdateDonor {
+
+    public UpdateDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Update:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+                String newPhone = JOptionPane.showInputDialog("Enter new phone:");
+                String newBlood = JOptionPane.showInputDialog("Enter new blood group:");
+
+                d.phone = newPhone;
+                d.bloodGroup = newBlood;
+
+                JOptionPane.showMessageDialog(null, "Donor Updated Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+DELETEDONOR.JAVA : 
+import javax.swing.*;
+
+public class DeleteDonor {
+
+    public DeleteDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Delete:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+                DonorData.donors.remove(d);
+                JOptionPane.showMessageDialog(null, "Donor Deleted Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+
+
+PROGRAM 
+
+SQL QUERY :
+CREATE DATABASE bloodbank;
+
+USE bloodbank;
+
+CREATE TABLE bloodbank_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    bloodgroup VARCHAR(5),
+    quantity INT,
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin (
+    login_id VARCHAR(25),
+    password VARCHAR(25)
+);
+
+INSERT INTO admin (login_id, password) VALUES
+("admin", "admin");
+
+ Blood Bank Management System Project in Java : 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnection {
+
+    private Connection con;
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+    private final String user = "root";
+    private final String pass = "root";
+
+    public Connection mkDataBase() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+            con = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return con;
+    }
+}
+LOGIN.JAVA : 
+import java.awt.*;
+import javax.swing.*;
+
+public class Login extends JFrame {
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+    JTextField id;
+    JPasswordField pass;
+    JButton submit;
+
+    public Login() {
+
+        setTitle("Blood Bank Management System");
+        setSize(700, 400);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        init();
+        setVisible(true);
+    }
+
+    public void init() {
+
+        headerLabel = new JLabel("Blood Bank Management System");
+        headerLabel.setBounds(180, 20, 400, 40);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setForeground(Color.RED);
+        add(headerLabel);
+
+        idLabel = new JLabel("Username");
+        idLabel.setBounds(180, 110, 140, 30);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(idLabel);
+
+        passLabel = new JLabel("Password");
+        passLabel.setBounds(180, 160, 140, 30);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(passLabel);
+
+        id = new JTextField();
+        id.setBounds(300, 110, 200, 30);
+        add(id);
+
+        pass = new JPasswordField();
+        pass.setBounds(300, 160, 200, 30);
+        add(pass);
+
+        submit = new JButton("Login");
+        submit.setBounds(400, 220, 100, 30);
+        submit.addActionListener(this::submitActionPerformed);
+        add(submit);
+
+        devInfo = new JLabel("Developed by: Your Name");
+        devInfo.setBounds(200, 320, 400, 30);
+        devInfo.setForeground(Color.GRAY);
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+        add(devInfo);
+    }
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String user = id.getText();
+        String pwd = new String(pass.getPassword());
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+            this.dispose(); // close window
+
+            // Open next frame
+            Frame2new f = new Frame2new();
+            f.showButtonDemo();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Login();
+    }
+}
+
+HOME.JAVA : 
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Home {
+
+    private JFrame mainFrame;
+    private JLabel headerLabel;
+    private JPanel controlPanel;
+
+    public static void main(String[] args) {
+        Home home = new Home();
+        home.prepareGUI();
+        home.showButtonDemo();
+    }
+
+    private void prepareGUI() {
+        mainFrame = new JFrame("Blood Bank Management System");
+        mainFrame.setSize(700, 400);
+        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setForeground(Color.WHITE);
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+        mainFrame.add(headerLabel);
+        mainFrame.add(controlPanel);
+
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void showButtonDemo() {
+        headerLabel.setText("Blood Bank Management System");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        JButton donorList = new JButton("View Donors");
+        JButton add = new JButton("Add Donor");
+        JButton update = new JButton("Update Donor");
+        JButton delete = new JButton("Delete Donor");
+        JButton donate = new JButton("Blood Donations");
+
+        donorList.addActionListener(e -> new ViewDonors());
+        add.addActionListener(e -> new AddDonor());
+        update.addActionListener(e -> new UpdateDonor());
+        delete.addActionListener(e -> new DeleteDonor());
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+        controlPanel.add(add);
+        controlPanel.add(update);
+        controlPanel.add(delete);
+        controlPanel.add(donorList);
+        controlPanel.add(donate);
+
+        mainFrame.setVisible(true);
+    }
+}
+
+ADD DONOR.JAVA:
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AddDonor {
+
+    public AddDonor() {
+        JFrame f = new JFrame("Add Donor");
+        f.setSize(400, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel nameL = new JLabel("Name:");
+        nameL.setBounds(50, 50, 100, 30);
+        f.add(nameL);
+
+        JTextField name = new JTextField();
+        name.setBounds(150, 50, 200, 30);
+        f.add(name);
+
+        JLabel bloodL = new JLabel("Blood Group:");
+        bloodL.setBounds(50, 100, 100, 30);
+        f.add(bloodL);
+
+        JTextField blood = new JTextField();
+        blood.setBounds(150, 100, 200, 30);
+        f.add(blood);
+
+        JLabel phoneL = new JLabel("Phone:");
+        phoneL.setBounds(50, 150, 100, 30);
+        f.add(phoneL);
+
+        JTextField phone = new JTextField();
+        phone.setBounds(150, 150, 200, 30);
+        f.add(phone);
+
+        JButton addBtn = new JButton("Add Donor");
+        addBtn.setBounds(130, 220, 150, 40);
+        f.add(addBtn);
+
+        addBtn.addActionListener(a -> {
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+            f.dispose();
+        });
+
+        f.setVisible(true);
+    }
+}
+
+DONORDETAILS.JAVA
+import javax.swing.*;
+import java.awt.*;
+
+public class DonorDetails {
+
+    public DonorDetails() {
+
+        JFrame f = new JFrame("Donor Details");
+        f.setSize(450, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel title = new JLabel("Search Donor Details");
+        title.setBounds(100, 20, 300, 30);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setForeground(Color.RED);
+        f.add(title);
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+        nameLabel.setBounds(50, 80, 150, 30);
+        f.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setBounds(180, 80, 180, 30);
+        f.add(nameField);
+
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(150, 130, 120, 35);
+        f.add(searchBtn);
+
+        // Display labels
+        JLabel resultTitle = new JLabel("Donor Information");
+        resultTitle.setBounds(120, 180, 250, 30);
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        resultTitle.setVisible(false);
+        f.add(resultTitle);
+
+        JLabel nameOut = new JLabel();
+        nameOut.setBounds(70, 220, 300, 30);
+        f.add(nameOut);
+
+        JLabel bloodOut = new JLabel();
+        bloodOut.setBounds(70, 250, 300, 30);
+        f.add(bloodOut);
+
+        JLabel phoneOut = new JLabel();
+        phoneOut.setBounds(70, 280, 300, 30);
+        f.add(phoneOut);
+
+        searchBtn.addActionListener(e -> {
+
+            String search = nameField.getText().trim();
+
+            if (search.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+                return;
+            }
+
+            boolean found = false;
+
+            for (Donor d : DonorData.donors) {
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+                    resultTitle.setVisible(true);
+
+                    nameOut.setText("Name: " + d.name);
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+                    phoneOut.setText("Phone: " + d.phone);
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+                resultTitle.setVisible(false);
+                nameOut.setText("");
+                bloodOut.setText("");
+                phoneOut.setText("");
+            }
+        });
+
+        f.setVisible(true);
+    }
+}
+UPDATEDONOR.JAVA : 
+import javax.swing.*;
+
+public class UpdateDonor {
+
+    public UpdateDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Update:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+                String newPhone = JOptionPane.showInputDialog("Enter new phone:");
+                String newBlood = JOptionPane.showInputDialog("Enter new blood group:");
+
+                d.phone = newPhone;
+                d.bloodGroup = newBlood;
+
+                JOptionPane.showMessageDialog(null, "Donor Updated Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+DELETEDONOR.JAVA : 
+import javax.swing.*;
+
+public class DeleteDonor {
+
+    public DeleteDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Delete:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+                DonorData.donors.remove(d);
+                JOptionPane.showMessageDialog(null, "Donor Deleted Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+
+
+PROGRAM 
+
+SQL QUERY :
+CREATE DATABASE bloodbank;
+
+USE bloodbank;
+
+CREATE TABLE bloodbank_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    bloodgroup VARCHAR(5),
+    quantity INT,
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin (
+    login_id VARCHAR(25),
+    password VARCHAR(25)
+);
+
+INSERT INTO admin (login_id, password) VALUES
+("admin", "admin");
+
+ Blood Bank Management System Project in Java : 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnection {
+
+    private Connection con;
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+    private final String user = "root";
+    private final String pass = "root";
+
+    public Connection mkDataBase() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+            con = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return con;
+    }
+}
+LOGIN.JAVA : 
+import java.awt.*;
+import javax.swing.*;
+
+public class Login extends JFrame {
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+    JTextField id;
+    JPasswordField pass;
+    JButton submit;
+
+    public Login() {
+
+        setTitle("Blood Bank Management System");
+        setSize(700, 400);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        init();
+        setVisible(true);
+    }
+
+    public void init() {
+
+        headerLabel = new JLabel("Blood Bank Management System");
+        headerLabel.setBounds(180, 20, 400, 40);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setForeground(Color.RED);
+        add(headerLabel);
+
+        idLabel = new JLabel("Username");
+        idLabel.setBounds(180, 110, 140, 30);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(idLabel);
+
+        passLabel = new JLabel("Password");
+        passLabel.setBounds(180, 160, 140, 30);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(passLabel);
+
+        id = new JTextField();
+        id.setBounds(300, 110, 200, 30);
+        add(id);
+
+        pass = new JPasswordField();
+        pass.setBounds(300, 160, 200, 30);
+        add(pass);
+
+        submit = new JButton("Login");
+        submit.setBounds(400, 220, 100, 30);
+        submit.addActionListener(this::submitActionPerformed);
+        add(submit);
+
+        devInfo = new JLabel("Developed by: Your Name");
+        devInfo.setBounds(200, 320, 400, 30);
+        devInfo.setForeground(Color.GRAY);
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+        add(devInfo);
+    }
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String user = id.getText();
+        String pwd = new String(pass.getPassword());
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+            this.dispose(); // close window
+
+            // Open next frame
+            Frame2new f = new Frame2new();
+            f.showButtonDemo();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Login();
+    }
+}
+
+HOME.JAVA : 
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Home {
+
+    private JFrame mainFrame;
+    private JLabel headerLabel;
+    private JPanel controlPanel;
+
+    public static void main(String[] args) {
+        Home home = new Home();
+        home.prepareGUI();
+        home.showButtonDemo();
+    }
+
+    private void prepareGUI() {
+        mainFrame = new JFrame("Blood Bank Management System");
+        mainFrame.setSize(700, 400);
+        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setForeground(Color.WHITE);
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+        mainFrame.add(headerLabel);
+        mainFrame.add(controlPanel);
+
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void showButtonDemo() {
+        headerLabel.setText("Blood Bank Management System");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        JButton donorList = new JButton("View Donors");
+        JButton add = new JButton("Add Donor");
+        JButton update = new JButton("Update Donor");
+        JButton delete = new JButton("Delete Donor");
+        JButton donate = new JButton("Blood Donations");
+
+        donorList.addActionListener(e -> new ViewDonors());
+        add.addActionListener(e -> new AddDonor());
+        update.addActionListener(e -> new UpdateDonor());
+        delete.addActionListener(e -> new DeleteDonor());
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+        controlPanel.add(add);
+        controlPanel.add(update);
+        controlPanel.add(delete);
+        controlPanel.add(donorList);
+        controlPanel.add(donate);
+
+        mainFrame.setVisible(true);
+    }
+}
+
+ADD DONOR.JAVA:
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AddDonor {
+
+    public AddDonor() {
+        JFrame f = new JFrame("Add Donor");
+        f.setSize(400, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel nameL = new JLabel("Name:");
+        nameL.setBounds(50, 50, 100, 30);
+        f.add(nameL);
+
+        JTextField name = new JTextField();
+        name.setBounds(150, 50, 200, 30);
+        f.add(name);
+
+        JLabel bloodL = new JLabel("Blood Group:");
+        bloodL.setBounds(50, 100, 100, 30);
+        f.add(bloodL);
+
+        JTextField blood = new JTextField();
+        blood.setBounds(150, 100, 200, 30);
+        f.add(blood);
+
+        JLabel phoneL = new JLabel("Phone:");
+        phoneL.setBounds(50, 150, 100, 30);
+        f.add(phoneL);
+
+        JTextField phone = new JTextField();
+        phone.setBounds(150, 150, 200, 30);
+        f.add(phone);
+
+        JButton addBtn = new JButton("Add Donor");
+        addBtn.setBounds(130, 220, 150, 40);
+        f.add(addBtn);
+
+        addBtn.addActionListener(a -> {
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+            f.dispose();
+        });
+
+        f.setVisible(true);
+    }
+}
+
+DONORDETAILS.JAVA
+import javax.swing.*;
+import java.awt.*;
+
+public class DonorDetails {
+
+    public DonorDetails() {
+
+        JFrame f = new JFrame("Donor Details");
+        f.setSize(450, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel title = new JLabel("Search Donor Details");
+        title.setBounds(100, 20, 300, 30);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setForeground(Color.RED);
+        f.add(title);
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+        nameLabel.setBounds(50, 80, 150, 30);
+        f.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setBounds(180, 80, 180, 30);
+        f.add(nameField);
+
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(150, 130, 120, 35);
+        f.add(searchBtn);
+
+        // Display labels
+        JLabel resultTitle = new JLabel("Donor Information");
+        resultTitle.setBounds(120, 180, 250, 30);
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        resultTitle.setVisible(false);
+        f.add(resultTitle);
+
+        JLabel nameOut = new JLabel();
+        nameOut.setBounds(70, 220, 300, 30);
+        f.add(nameOut);
+
+        JLabel bloodOut = new JLabel();
+        bloodOut.setBounds(70, 250, 300, 30);
+        f.add(bloodOut);
+
+        JLabel phoneOut = new JLabel();
+        phoneOut.setBounds(70, 280, 300, 30);
+        f.add(phoneOut);
+
+        searchBtn.addActionListener(e -> {
+
+            String search = nameField.getText().trim();
+
+            if (search.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+                return;
+            }
+
+            boolean found = false;
+
+            for (Donor d : DonorData.donors) {
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+                    resultTitle.setVisible(true);
+
+                    nameOut.setText("Name: " + d.name);
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+                    phoneOut.setText("Phone: " + d.phone);
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+                resultTitle.setVisible(false);
+                nameOut.setText("");
+                bloodOut.setText("");
+                phoneOut.setText("");
+            }
+        });
+
+        f.setVisible(true);
+    }
+}
+UPDATEDONOR.JAVA : 
+import javax.swing.*;
+
+public class UpdateDonor {
+
+    public UpdateDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Update:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+                String newPhone = JOptionPane.showInputDialog("Enter new phone:");
+                String newBlood = JOptionPane.showInputDialog("Enter new blood group:");
+
+                d.phone = newPhone;
+                d.bloodGroup = newBlood;
+
+                JOptionPane.showMessageDialog(null, "Donor Updated Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+DELETEDONOR.JAVA : 
+import javax.swing.*;
+
+public class DeleteDonor {
+
+    public DeleteDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Delete:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+                DonorData.donors.remove(d);
+                JOptionPane.showMessageDialog(null, "Donor Deleted Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+
+
+PROGRAM 
+
+SQL QUERY :
+CREATE DATABASE bloodbank;
+
+USE bloodbank;
+
+CREATE TABLE bloodbank_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    bloodgroup VARCHAR(5),
+    quantity INT,
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin (
+    login_id VARCHAR(25),
+    password VARCHAR(25)
+);
+
+INSERT INTO admin (login_id, password) VALUES
+("admin", "admin");
+
+ Blood Bank Management System Project in Java : 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnection {
+
+    private Connection con;
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+    private final String user = "root";
+    private final String pass = "root";
+
+    public Connection mkDataBase() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+            con = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return con;
+    }
+}
+LOGIN.JAVA : 
+import java.awt.*;
+import javax.swing.*;
+
+public class Login extends JFrame {
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+    JTextField id;
+    JPasswordField pass;
+    JButton submit;
+
+    public Login() {
+
+        setTitle("Blood Bank Management System");
+        setSize(700, 400);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        init();
+        setVisible(true);
+    }
+
+    public void init() {
+
+        headerLabel = new JLabel("Blood Bank Management System");
+        headerLabel.setBounds(180, 20, 400, 40);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setForeground(Color.RED);
+        add(headerLabel);
+
+        idLabel = new JLabel("Username");
+        idLabel.setBounds(180, 110, 140, 30);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(idLabel);
+
+        passLabel = new JLabel("Password");
+        passLabel.setBounds(180, 160, 140, 30);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(passLabel);
+
+        id = new JTextField();
+        id.setBounds(300, 110, 200, 30);
+        add(id);
+
+        pass = new JPasswordField();
+        pass.setBounds(300, 160, 200, 30);
+        add(pass);
+
+        submit = new JButton("Login");
+        submit.setBounds(400, 220, 100, 30);
+        submit.addActionListener(this::submitActionPerformed);
+        add(submit);
+
+        devInfo = new JLabel("Developed by: Your Name");
+        devInfo.setBounds(200, 320, 400, 30);
+        devInfo.setForeground(Color.GRAY);
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+        add(devInfo);
+    }
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String user = id.getText();
+        String pwd = new String(pass.getPassword());
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+            this.dispose(); // close window
+
+            // Open next frame
+            Frame2new f = new Frame2new();
+            f.showButtonDemo();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Login();
+    }
+}
+
+HOME.JAVA : 
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Home {
+
+    private JFrame mainFrame;
+    private JLabel headerLabel;
+    private JPanel controlPanel;
+
+    public static void main(String[] args) {
+        Home home = new Home();
+        home.prepareGUI();
+        home.showButtonDemo();
+    }
+
+    private void prepareGUI() {
+        mainFrame = new JFrame("Blood Bank Management System");
+        mainFrame.setSize(700, 400);
+        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setForeground(Color.WHITE);
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+        mainFrame.add(headerLabel);
+        mainFrame.add(controlPanel);
+
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void showButtonDemo() {
+        headerLabel.setText("Blood Bank Management System");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        JButton donorList = new JButton("View Donors");
+        JButton add = new JButton("Add Donor");
+        JButton update = new JButton("Update Donor");
+        JButton delete = new JButton("Delete Donor");
+        JButton donate = new JButton("Blood Donations");
+
+        donorList.addActionListener(e -> new ViewDonors());
+        add.addActionListener(e -> new AddDonor());
+        update.addActionListener(e -> new UpdateDonor());
+        delete.addActionListener(e -> new DeleteDonor());
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+        controlPanel.add(add);
+        controlPanel.add(update);
+        controlPanel.add(delete);
+        controlPanel.add(donorList);
+        controlPanel.add(donate);
+
+        mainFrame.setVisible(true);
+    }
+}
+
+ADD DONOR.JAVA:
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AddDonor {
+
+    public AddDonor() {
+        JFrame f = new JFrame("Add Donor");
+        f.setSize(400, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel nameL = new JLabel("Name:");
+        nameL.setBounds(50, 50, 100, 30);
+        f.add(nameL);
+
+        JTextField name = new JTextField();
+        name.setBounds(150, 50, 200, 30);
+        f.add(name);
+
+        JLabel bloodL = new JLabel("Blood Group:");
+        bloodL.setBounds(50, 100, 100, 30);
+        f.add(bloodL);
+
+        JTextField blood = new JTextField();
+        blood.setBounds(150, 100, 200, 30);
+        f.add(blood);
+
+        JLabel phoneL = new JLabel("Phone:");
+        phoneL.setBounds(50, 150, 100, 30);
+        f.add(phoneL);
+
+        JTextField phone = new JTextField();
+        phone.setBounds(150, 150, 200, 30);
+        f.add(phone);
+
+        JButton addBtn = new JButton("Add Donor");
+        addBtn.setBounds(130, 220, 150, 40);
+        f.add(addBtn);
+
+        addBtn.addActionListener(a -> {
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+            f.dispose();
+        });
+
+        f.setVisible(true);
+    }
+}
+
+DONORDETAILS.JAVA
+import javax.swing.*;
+import java.awt.*;
+
+public class DonorDetails {
+
+    public DonorDetails() {
+
+        JFrame f = new JFrame("Donor Details");
+        f.setSize(450, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel title = new JLabel("Search Donor Details");
+        title.setBounds(100, 20, 300, 30);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setForeground(Color.RED);
+        f.add(title);
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+        nameLabel.setBounds(50, 80, 150, 30);
+        f.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setBounds(180, 80, 180, 30);
+        f.add(nameField);
+
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(150, 130, 120, 35);
+        f.add(searchBtn);
+
+        // Display labels
+        JLabel resultTitle = new JLabel("Donor Information");
+        resultTitle.setBounds(120, 180, 250, 30);
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        resultTitle.setVisible(false);
+        f.add(resultTitle);
+
+        JLabel nameOut = new JLabel();
+        nameOut.setBounds(70, 220, 300, 30);
+        f.add(nameOut);
+
+        JLabel bloodOut = new JLabel();
+        bloodOut.setBounds(70, 250, 300, 30);
+        f.add(bloodOut);
+
+        JLabel phoneOut = new JLabel();
+        phoneOut.setBounds(70, 280, 300, 30);
+        f.add(phoneOut);
+
+        searchBtn.addActionListener(e -> {
+
+            String search = nameField.getText().trim();
+
+            if (search.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+                return;
+            }
+
+            boolean found = false;
+
+            for (Donor d : DonorData.donors) {
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+                    resultTitle.setVisible(true);
+
+                    nameOut.setText("Name: " + d.name);
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+                    phoneOut.setText("Phone: " + d.phone);
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+                resultTitle.setVisible(false);
+                nameOut.setText("");
+                bloodOut.setText("");
+                phoneOut.setText("");
+            }
+        });
+
+        f.setVisible(true);
+    }
+}
+UPDATEDONOR.JAVA : 
+import javax.swing.*;
+
+public class UpdateDonor {
+
+    public UpdateDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Update:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+
+                String newPhone = JOptionPane.showInputDialog("Enter new phone:");
+                String newBlood = JOptionPane.showInputDialog("Enter new blood group:");
+
+                d.phone = newPhone;
+                d.bloodGroup = newBlood;
+
+                JOptionPane.showMessageDialog(null, "Donor Updated Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+DELETEDONOR.JAVA : 
+import javax.swing.*;
+
+public class DeleteDonor {
+
+    public DeleteDonor() {
+
+        String search = JOptionPane.showInputDialog("Enter Donor Name to Delete:");
+
+        if (search == null) return;
+
+        for (Donor d : DonorData.donors) {
+
+            if (d.name.equalsIgnoreCase(search)) {
+                DonorData.donors.remove(d);
+                JOptionPane.showMessageDialog(null, "Donor Deleted Successfully!");
+                return;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Donor Not Found!");
+    }
+}
+
+
+
+
+PROGRAM 
+
+SQL QUERY :
+CREATE DATABASE bloodbank;
+
+USE bloodbank;
+
+CREATE TABLE bloodbank_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(25) NOT NULL,
+    bloodgroup VARCHAR(5),
+    quantity INT,
+    added_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin (
+    login_id VARCHAR(25),
+    password VARCHAR(25)
+);
+
+INSERT INTO admin (login_id, password) VALUES
+("admin", "admin");
+
+ Blood Bank Management System Project in Java : 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DBConnection {
+
+    private Connection con;
+    private final String url = "jdbc:mysql://localhost:3307/bloodbank";
+    private final String user = "root";
+    private final String pass = "root";
+
+    public Connection mkDataBase() throws SQLException {
+        try {
+            Class.forName("com.mysql.jdbc.Driver"); // Old driver
+            con = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return con;
+    }
+}
+LOGIN.JAVA : 
+import java.awt.*;
+import javax.swing.*;
+
+public class Login extends JFrame {
+
+    JLabel idLabel, passLabel, headerLabel, devInfo, background;
+    JTextField id;
+    JPasswordField pass;
+    JButton submit;
+
+    public Login() {
+
+        setTitle("Blood Bank Management System");
+        setSize(700, 400);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        init();
+        setVisible(true);
+    }
+
+    public void init() {
+
+        headerLabel = new JLabel("Blood Bank Management System");
+        headerLabel.setBounds(180, 20, 400, 40);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setForeground(Color.RED);
+        add(headerLabel);
+
+        idLabel = new JLabel("Username");
+        idLabel.setBounds(180, 110, 140, 30);
+        idLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(idLabel);
+
+        passLabel = new JLabel("Password");
+        passLabel.setBounds(180, 160, 140, 30);
+        passLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(passLabel);
+
+        id = new JTextField();
+        id.setBounds(300, 110, 200, 30);
+        add(id);
+
+        pass = new JPasswordField();
+        pass.setBounds(300, 160, 200, 30);
+        add(pass);
+
+        submit = new JButton("Login");
+        submit.setBounds(400, 220, 100, 30);
+        submit.addActionListener(this::submitActionPerformed);
+        add(submit);
+
+        devInfo = new JLabel("Developed by: Your Name");
+        devInfo.setBounds(200, 320, 400, 30);
+        devInfo.setForeground(Color.GRAY);
+        devInfo.setFont(new Font("Arial", Font.PLAIN, 14));
+        add(devInfo);
+    }
+
+    public void submitActionPerformed(java.awt.event.ActionEvent evt) {
+
+        String user = id.getText();
+        String pwd = new String(pass.getPassword());
+
+        if (user.equals("admin") && pwd.equals("admin")) {
+
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+
+            this.dispose(); // close window
+
+            // Open next frame
+            Frame2new f = new Frame2new();
+            f.showButtonDemo();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Login();
+    }
+}
+
+HOME.JAVA : 
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class Home {
+
+    private JFrame mainFrame;
+    private JLabel headerLabel;
+    private JPanel controlPanel;
+
+    public static void main(String[] args) {
+        Home home = new Home();
+        home.prepareGUI();
+        home.showButtonDemo();
+    }
+
+    private void prepareGUI() {
+        mainFrame = new JFrame("Blood Bank Management System");
+        mainFrame.setSize(700, 400);
+        mainFrame.setLayout(new GridLayout(3, 1));
+        mainFrame.getContentPane().setBackground(Color.RED);
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+        });
+
+        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel.setForeground(Color.WHITE);
+
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayout(1, 5));
+
+        mainFrame.add(headerLabel);
+        mainFrame.add(controlPanel);
+
+        mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
+    }
+
+    public void showButtonDemo() {
+        headerLabel.setText("Blood Bank Management System");
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 26));
+
+        JButton donorList = new JButton("View Donors");
+        JButton add = new JButton("Add Donor");
+        JButton update = new JButton("Update Donor");
+        JButton delete = new JButton("Delete Donor");
+        JButton donate = new JButton("Blood Donations");
+
+        donorList.addActionListener(e -> new ViewDonors());
+        add.addActionListener(e -> new AddDonor());
+        update.addActionListener(e -> new UpdateDonor());
+        delete.addActionListener(e -> new DeleteDonor());
+        donate.addActionListener(e -> JOptionPane.showMessageDialog(null, "Donation Page Coming Soon"));
+
+        controlPanel.add(add);
+        controlPanel.add(update);
+        controlPanel.add(delete);
+        controlPanel.add(donorList);
+        controlPanel.add(donate);
+
+        mainFrame.setVisible(true);
+    }
+}
+
+ADD DONOR.JAVA:
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class AddDonor {
+
+    public AddDonor() {
+        JFrame f = new JFrame("Add Donor");
+        f.setSize(400, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel nameL = new JLabel("Name:");
+        nameL.setBounds(50, 50, 100, 30);
+        f.add(nameL);
+
+        JTextField name = new JTextField();
+        name.setBounds(150, 50, 200, 30);
+        f.add(name);
+
+        JLabel bloodL = new JLabel("Blood Group:");
+        bloodL.setBounds(50, 100, 100, 30);
+        f.add(bloodL);
+
+        JTextField blood = new JTextField();
+        blood.setBounds(150, 100, 200, 30);
+        f.add(blood);
+
+        JLabel phoneL = new JLabel("Phone:");
+        phoneL.setBounds(50, 150, 100, 30);
+        f.add(phoneL);
+
+        JTextField phone = new JTextField();
+        phone.setBounds(150, 150, 200, 30);
+        f.add(phone);
+
+        JButton addBtn = new JButton("Add Donor");
+        addBtn.setBounds(130, 220, 150, 40);
+        f.add(addBtn);
+
+        addBtn.addActionListener(a -> {
+            DonorData.donors.add(new Donor(name.getText(), blood.getText(), phone.getText()));
+            JOptionPane.showMessageDialog(f, "Donor Added Successfully!");
+            f.dispose();
+        });
+
+        f.setVisible(true);
+    }
+}
+
+DONORDETAILS.JAVA
+import javax.swing.*;
+import java.awt.*;
+
+public class DonorDetails {
+
+    public DonorDetails() {
+
+        JFrame f = new JFrame("Donor Details");
+        f.setSize(450, 400);
+        f.setLayout(null);
+        f.setLocationRelativeTo(null);
+
+        JLabel title = new JLabel("Search Donor Details");
+        title.setBounds(100, 20, 300, 30);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setForeground(Color.RED);
+        f.add(title);
+
+        JLabel nameLabel = new JLabel("Enter Donor Name:");
+        nameLabel.setBounds(50, 80, 150, 30);
+        f.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setBounds(180, 80, 180, 30);
+        f.add(nameField);
+
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(150, 130, 120, 35);
+        f.add(searchBtn);
+
+        // Display labels
+        JLabel resultTitle = new JLabel("Donor Information");
+        resultTitle.setBounds(120, 180, 250, 30);
+        resultTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        resultTitle.setVisible(false);
+        f.add(resultTitle);
+
+        JLabel nameOut = new JLabel();
+        nameOut.setBounds(70, 220, 300, 30);
+        f.add(nameOut);
+
+        JLabel bloodOut = new JLabel();
+        bloodOut.setBounds(70, 250, 300, 30);
+        f.add(bloodOut);
+
+        JLabel phoneOut = new JLabel();
+        phoneOut.setBounds(70, 280, 300, 30);
+        f.add(phoneOut);
+
+        searchBtn.addActionListener(e -> {
+
+            String search = nameField.getText().trim();
+
+            if (search.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a donor name!");
+                return;
+            }
+
+            boolean found = false;
+
+            for (Donor d : DonorData.donors) {
+
+                if (d.name.equalsIgnoreCase(search)) {
+
+                    resultTitle.setVisible(true);
+
+                    nameOut.setText("Name: " + d.name);
+                    bloodOut.setText("Blood Group: " + d.bloodGroup);
+                    phoneOut.setText("Phone: " + d.phone);
+
+                    nameOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    bloodOut.setFont(new Font("Arial", Font.PLAIN, 16));
+                    phoneOut.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(f, "Donor Not Found!");
+                resultTitle.setVisible(false);
+                nameOut.setText("");
+                bloodOut.setText("");
+                phoneOut.setText("");
+            }
+        });
+
+        f.s
